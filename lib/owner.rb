@@ -1,17 +1,13 @@
 class Owner
 
 @@all = []
-@@pets = {:dogs => [], :cats => []}
 
+  attr_reader :name, :species 
 
-  attr_accessor :name, :pets, :dogs, :cats  #these are things you can change
-  attr_reader :species #tells the owner you cannot change the species
-
-  def initialize(species)
-    @species = species
+  def initialize(name)
+    @species = "human"
     @name = name
     @@all << self
-    @pets = {:dogs => [], :cats => []}
   end
 
 def self.all
@@ -19,38 +15,54 @@ def self.all
 end
 
 def self.reset_all
-  @@all.clear
+  self.all.clear
 end
 
 def self.count
-  @@all.length
+  self.all.count
 end
 
 def say_species
-  "I am a #{@species}."
+  "I am a #{self.species}."
 end
 
-def buy_cat(name_of_cat)
-    @pets[:cats] << Cat.new(name_of_cat)
+def cats
+  Cat.all.select{|cat| cat.owner == self}
+end
+
+def dogs
+  Dog.all.select{|dog| dog.owner == self}
+end
+
+def buy_cat(name)
+    Cat.new(name, self)
   end
 
-  def buy_dog(name_of_dog)
-    @pets[:dogs] << Dog.new(name_of_dog)
+  def buy_dog(name)
+    Dog.new(name, self)
   end
 
   def walk_dogs
-    @pets.collect do |species, instances|
-      if species == :dogs
-        instances.each do |dog|
-          dog.mood = "happy"
-        end
-      end
+      self.dogs.each { |dog| dog.mood = "happy"}
     end
 
-   end
 
-   def play_with_cats
-     pets[:cats].map {|cat| cat.mood = "happy"}
+   def feed_cats
+     self.cats.each { |cat| cat.mood = "happy"}
 end
+
+def sell_pets
+  pets = self.dogs + self.cats
+
+  pets.each do |pet|
+    pet.mood = "nervous"
+    pet.owner = nil
+  end
+end
+
+def list_pets
+  "I have #{self.dogs.count} dog(s), and #{self.cats.count} cat(s)."
+end
+
 
 end
