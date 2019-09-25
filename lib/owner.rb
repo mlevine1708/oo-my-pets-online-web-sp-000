@@ -46,7 +46,7 @@ def buy_cat(name_of_cat)
         end
       end
     end
-end
+
    end
 
    def play_with_cats
